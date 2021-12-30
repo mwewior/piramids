@@ -74,3 +74,46 @@ wartości wysokości piramid
             for j in range(n):
                 newone[i].append(0)
         return newone
+
+    def solve_if_ONE(self):
+        table = self.generate_raw_table()
+        n = self.lenght()
+        for row in range(n):
+            # patrząc od góry
+            if self.guide()[0][row] == 1:
+                table[0][row] = n
+            # patrząc od dołu
+            if self.guide()[1][row] == 1:
+                table[n-1][row] = n
+            # patrząc od lewej
+            if self.guide()[2][row] == 1:
+                table[row][0] = n
+            # patrząc od prawej
+            if self.guide()[3][row] == 1:
+                table[row][n-1] = n
+        return table
+
+    def solve_if_N(self):
+        table = self.generate_raw_table()
+        n = self.lenght()
+        for row in range(n):
+            for col in range(n):
+                # patrząc od  góry
+                if self.guide()[0][col] == n:
+                    for value in range(n):
+                        table[value][col] = value + 1
+                # patrząc od dołu
+                if self.guide()[1][col] == n:
+                    i = list(range(n))
+                    for value in i:
+                        table[value][col] = i[-value - 1] + 1
+                # patrząc od lewej
+                if self.guide()[2][col] == n:
+                    for value in range(n):
+                        table[col][value] = value + 1
+                # patrząc od prawej
+                if self.guide()[3][col] == n:
+                    i = list(range(n))
+                    for value in i:
+                        table[col][value] = i[-value - 1] + 1
+        return table
