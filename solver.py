@@ -61,3 +61,16 @@ Liczba widzianych piramid nie może przekraczać długości boku planszy.'
         zwraca długość boku planszy
         """
         return self._lenght
+
+    def generate_raw_table(self):
+        """
+        tworzy pustą planszę, na którą następnie będą nanoszone \
+wartości wysokości piramid
+        """
+        n = int(self.lenght())
+        newone = []
+        for i in range(n):
+            newone.append([])
+            for j in range(n):
+                newone[i].append(0)
+        return newone
