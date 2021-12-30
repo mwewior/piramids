@@ -1,6 +1,9 @@
-from solver import Solver, WrongGuideError
+from solver import Solver
+from solver import PyraminInterposeError, InvalidGuideError
 import pytest
 
+
+# tests basic functions (guide, lenght)
 
 def test_guide_valid():
     guide1 = Solver([
@@ -50,7 +53,7 @@ def test_guide_number_str_instead_of_int():
 
 
 def test_guide_not_numbers():
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             ['/@fg', 0, 1, '['],
             [0, 'a', 3, 4],
@@ -60,13 +63,13 @@ def test_guide_not_numbers():
 
 
 def test_guide_valid_rows():
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [1, 0, 1, 0],
             [0, 1, 0, 0],
             [0, 0, 1, 0]
             ])
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [1, 0, 1, 0],
             [0, 1, 0, 0],
@@ -77,21 +80,21 @@ def test_guide_valid_rows():
 
 
 def test_guide_different_row_lenght():
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [1, 0, 1, 0],
             [0, 1, 0],
             [0, 0, 1, 0],
             [4, 0, 1, 0]
             ])
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [1, 0, 1, 0],
             [0, 1, 0, 3],
             [0, 0, 1, 0],
             [4, 0, 1, 0, 2]
             ])
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [],
             [0, 1, 0, 3, 2],
@@ -101,7 +104,7 @@ def test_guide_different_row_lenght():
 
 
 def test_guide_height_over_lenght():
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [1, 0, 9, 0],
             [0, 1, 0, 30],
@@ -111,7 +114,7 @@ def test_guide_height_over_lenght():
 
 
 def test_guide_negative_height():
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [-1, 0, 9, 0],
             [0, 1, 0, -5],
@@ -121,7 +124,7 @@ def test_guide_negative_height():
 
 
 def test_guide_height_as_float():
-    with pytest.raises(WrongGuideError):
+    with pytest.raises(InvalidGuideError):
         Solver([
             [1, 0, 0.9, 0.0],
             [0, 1, 0, 3.0],
@@ -131,7 +134,6 @@ def test_guide_height_as_float():
 
 
 # tests table creator
-
 
 def test_raw_table_create():
     guide1 = Solver([
@@ -178,7 +180,6 @@ def test_raw_table_create():
 
 # tests filling table when guide is 1
 
-
 def test_if_ONE_in_row_0():
     guide1 = Solver([
         [0, 0, 1, 0],
@@ -191,6 +192,19 @@ def test_if_ONE_in_row_0():
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0]
+    ]
+
+    # with partly completed table
+    assert guide1.solve_if_ONE([
+        [0, 0, 4, 0],
+        [0, 0, 3, 0],
+        [0, 0, 2, 0],
+        [0, 0, 1, 0]
+    ]) == [
+        [0, 0, 4, 0],
+        [0, 0, 3, 0],
+        [0, 0, 2, 0],
+        [0, 0, 1, 0]
     ]
 
 
@@ -208,6 +222,19 @@ def test_if_ONE_in_row_1():
         [0, 4, 0, 0]
     ]
 
+    # with partly completed table
+    assert guide1.solve_if_ONE([
+        [0, 3, 0, 1],
+        [0, 2, 3, 0],
+        [3, 1, 0, 0],
+        [0, 4, 0, 0]
+    ]) == [
+        [0, 3, 0, 1],
+        [0, 2, 3, 0],
+        [3, 1, 0, 0],
+        [0, 4, 0, 0]
+    ]
+
 
 def test_if_ONE_in_row_2():
     guide1 = Solver([
@@ -217,6 +244,19 @@ def test_if_ONE_in_row_2():
         [0, 0, 0, 0]
         ])
     assert guide1.solve_if_ONE() == [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [4, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
+    # with partly completed table
+    assert guide1.solve_if_ONE([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [4, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]) == [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [4, 0, 0, 0],
@@ -238,13 +278,25 @@ def test_if_ONE_in_row_3():
         [0, 0, 0, 0]
     ]
 
+    # with partly completed table
+    assert guide1.solve_if_ONE([
+        [3, 1, 4, 2],
+        [1, 2, 3, 0],
+        [4, 3, 2, 1],
+        [2, 4, 1, 3]
+    ]) == [
+        [3, 1, 4, 2],
+        [1, 2, 3, 4],
+        [4, 3, 2, 1],
+        [2, 4, 1, 3]
+    ]
+
 
 # def test_if_ONE_in_mix():
 #     pass
 
 
 # tests filling table when guide is n
-
 
 def test_if_N_in_row_0():
     guide1 = Solver([
@@ -254,6 +306,19 @@ def test_if_N_in_row_0():
         [0, 0, 0, 0]
         ])
     assert guide1.solve_if_N() == [
+        [0, 0, 1, 0],
+        [0, 0, 2, 0],
+        [0, 0, 3, 0],
+        [0, 0, 4, 0]
+        ]
+
+    # with partly completed table
+    assert guide1.solve_if_N([
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]) == [
         [0, 0, 1, 0],
         [0, 0, 2, 0],
         [0, 0, 3, 0],
@@ -275,6 +340,19 @@ def test_if_N_in_row_1():
         [0, 1, 0, 0]
         ]
 
+    # with partly completed table
+    assert guide1.solve_if_N([
+        [0, 0, 0, 0],
+        [0, 3, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0]
+    ]) == [
+        [0, 4, 0, 0],
+        [0, 3, 0, 0],
+        [0, 2, 0, 0],
+        [0, 1, 0, 0]
+        ]
+
 
 def test_if_N_in_row_2():
     guide1 = Solver([
@@ -284,6 +362,19 @@ def test_if_N_in_row_2():
         [0, 0, 0, 0]
         ])
     assert guide1.solve_if_N() == [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 2, 3, 4]
+    ]
+
+    # with partly completed table
+    assert guide1.solve_if_N([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 2, 3, 4]
+    ]) == [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -305,6 +396,49 @@ def test_if_N_in_row_3():
         [0, 0, 0, 0]
     ]
 
+    # with partly completed table
+    assert guide1.solve_if_N([
+        [4, 0, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]) == [
+        [4, 3, 2, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
 
 # def test_if_N_in_mix():
 #     pass
+
+
+def test_if_N_invalid_previous_table():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [4, 0, 0, 0]
+        ])
+    with pytest.raises(PyraminInterposeError):
+        guide1.solve_if_N([
+            [1, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]]
+        )
+
+    guide2 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 4],
+        [0, 0, 0, 0]
+        ])
+    with pytest.raises(PyraminInterposeError):
+        guide2.solve_if_N([
+            [0, 0, 2, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 4, 1]]
+        )
