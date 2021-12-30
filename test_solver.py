@@ -174,3 +174,137 @@ def test_raw_table_create():
         [0, 0],
         [0, 0]
     ]
+
+
+# tests filling table when guide is 1
+
+
+def test_if_ONE_in_row_0():
+    guide1 = Solver([
+        [0, 0, 1, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+        ])
+    assert guide1.solve_if_ONE() == [
+        [0, 0, 4, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
+
+def test_if_ONE_in_row_1():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+        ])
+    assert guide1.solve_if_ONE() == [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 4, 0, 0]
+    ]
+
+
+def test_if_ONE_in_row_2():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 0]
+        ])
+    assert guide1.solve_if_ONE() == [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [4, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
+
+def test_if_ONE_in_row_3():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0]
+        ])
+    assert guide1.solve_if_ONE() == [
+        [0, 0, 0, 0],
+        [0, 0, 0, 4],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
+
+# def test_if_ONE_in_mix():
+#     pass
+
+
+# tests filling table when guide is n
+
+
+def test_if_N_in_row_0():
+    guide1 = Solver([
+        [0, 0, 4, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+        ])
+    assert guide1.solve_if_N() == [
+        [0, 0, 1, 0],
+        [0, 0, 2, 0],
+        [0, 0, 3, 0],
+        [0, 0, 4, 0]
+        ]
+
+
+def test_if_N_in_row_1():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 4, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+        ])
+    assert guide1.solve_if_N() == [
+        [0, 4, 0, 0],
+        [0, 3, 0, 0],
+        [0, 2, 0, 0],
+        [0, 1, 0, 0]
+        ]
+
+
+def test_if_N_in_row_2():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 4],
+        [0, 0, 0, 0]
+        ])
+    assert guide1.solve_if_N() == [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 2, 3, 4]
+    ]
+
+
+def test_if_N_in_row_3():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [4, 0, 0, 0]
+        ])
+    assert guide1.solve_if_N() == [
+        [4, 3, 2, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+
+
+# def test_if_N_in_mix():
+#     pass
