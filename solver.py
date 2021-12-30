@@ -72,15 +72,22 @@ Liczba widzianych piramid nie może przekraczać długości boku planszy.'
 wartości wysokości piramid
         """
         n = int(self.lenght())
-        newone = []
+        blank = []
         for i in range(n):
-            newone.append([])
+            blank.append([])
             for j in range(n):
-                newone[i].append(0)
-        return newone
+                blank[i].append(0)
+        return blank
 
-    def solve_if_ONE(self):
-        table = self.generate_raw_table()
+    def set_table(self, table=None):
+        if table is None:
+            overwritten_table = self.generate_raw_table()
+        else:
+            overwritten_table = table
+        return overwritten_table
+
+    def solve_if_ONE(self, prev_table=None):
+        table = self.set_table(prev_table)
         n = self.lenght()
         for row in range(n):
             # patrząc od góry
@@ -107,10 +114,10 @@ wartości wysokości piramid
                     table[row][n-1] = n
                 else:
                     raise PyraminInterposeError()
-        return table
+        return self.set_table(table)
 
-    def solve_if_N(self):
-        table = self.generate_raw_table()
+    def solve_if_N(self, prev_table=None):
+        table = self.set_table(prev_table)
         n = self.lenght()
         for col in range(n):
             # patrząc od  góry
@@ -145,4 +152,26 @@ wartości wysokości piramid
                         table[col][val] = value
                     else:
                         raise PyraminInterposeError()
-        return table
+        return self.set_table(table)
+
+    # ### wstępne implementacje funkcji wyjściowych
+
+    # def final_table(self):
+    #     pass
+
+    # def show(self):
+    #     if self.final_table():
+    #         for row in self.final_table():
+    #             for point in range(len(row)):
+    #                 row[point] = str(row[point])
+    #         str_table = []
+    #         for old_row in self.final_table():
+    #             new_row = "".join(old_row)
+    #             str_table.append(new_row)
+    #         output_string = '\n'
+    #         for z in str_table:
+    #             str_row = f'{z}\n'
+    #             output_string += str_row
+    #         return output_string
+    #     else:
+    #         return f'zadania nie da się rozwiązać.'
