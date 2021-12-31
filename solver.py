@@ -1,18 +1,47 @@
 class InvalidGuideError(Exception):
+    """
+    Raised when guide is in invalid format
+    """
     pass
 
 
 class PyraminInterposeError(Exception):
+    """
+    Raised when there is conflict while solving
+    """
+    pass
+
+
+class InvalidTableError(Exception):
+    """
+    Raised when there is conflict on table;
+    Usually when:
+        1) some table's values exceed maximum height
+        2) there are same values in row or column
+    """
     pass
 
 
 class Solver:
     """
-    class Solver:
-    próbuje rozwiązać zadanie z podanej podpowiedzi
+    class Solver. Contains atributes:
+        :param guide: guide for solving table
+        :type guide: list
+            :note: list of lists ( always 4 lists - all the same lenght)
 
-    (podpowiedź jest zapisana jako lista list -
-        - zawsze 4 wiersze o liczbie kolumn równej długości boku planszy)
+        :param lenght: table's lenght
+        :type lenght: int
+
+        :param generate_raw_table: creates blank table for future solvings
+        :type generate_raw_table: list
+            :note: table is a list of lists. contains N lists of N elements\
+                (N is a self.lenght() value), fills them as '0'
+
+        :param set_table: overwrites the  previous table with new solutions
+        :type set_table: list
+
+        :param solve_if_X: reads the guide and sets proper value in the table
+        :type solve_if_X: list
     """
 
     def __init__(self, guide: list):
@@ -84,7 +113,41 @@ wartości wysokości piramid
             overwritten_table = self.generate_raw_table()
         else:
             overwritten_table = table
+        n = self.lenght()
+        for i in range(n):
+            for j in range(n):
+                if int(overwritten_table[i][j]) > n:
+                    raise InvalidTableError(
+                        "Height of pyramid on table is incorrect"
+                    )
         return overwritten_table
+
+    def is_rows_and_cols_correct(self, table=None):
+
+        # w pliku main będzie trzeba dodać,
+        # że jeśli is_rows_and_cols_coorect is False ->
+        # -> raise InvalidTableError(
+        #         " There are same pyramids in one row"
+        #    )
+
+        # trzeba uwzględnić to, że np [2, 0, 0, 3] jest ok,
+        # (set zrobi z niej [2, 0, 3])
+
+        n = self.lenght()
+        if table is None:
+            pass
+        else:
+            for i in range(n):
+                a = table[i]
+                b = list(set(table[i]))
+                if a != b:
+                    return False
+                column = []
+                for j in range(n):
+                    column.append(table[i][j])
+                    if column != list(set(column)):
+                        return False
+            return True
 
     def solve_if_ONE(self, prev_table=None):
         table = self.set_table(prev_table)
