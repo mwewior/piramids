@@ -178,7 +178,7 @@ def test_raw_table_create():
     ]
 
 
-# tests filling table when guide is 1
+# tests filling table when there is 1 in guide
 
 def test_if_ONE_in_row_0():
     guide1 = Solver([
@@ -292,11 +292,66 @@ def test_if_ONE_in_row_3():
     ]
 
 
-# def test_if_ONE_in_mix():
-#     pass
+def test_if_ONE_in_mix():
+    guide = Solver([
+        [0, 1, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0]
+        ])
+
+    assert guide.solve_if_ONE() == [
+        [0, 4, 0, 0],
+        [4, 0, 0, 0],
+        [0, 0, 0, 4],
+        [0, 0, 0, 0]
+    ]
+
+    # with partly completed table
+    assert guide.solve_if_ONE([
+        [0, 4, 0, 1],
+        [0, 2, 3, 0],
+        [2, 3, 4, 0],
+        [3, 1, 0, 0]
+    ]) == [
+        [0, 4, 0, 1],
+        [4, 2, 3, 0],
+        [2, 3, 4, 4],
+        [3, 1, 0, 0]
+    ]
 
 
-# tests filling table when guide is n
+def test_if_ONE_invalid_previous_table():
+    guide1 = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 1]
+        ])
+    with pytest.raises(PyraminInterposeError):
+        guide1.solve_if_ONE([
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 3]
+            ])
+
+    guide2 = Solver([
+        [0, 1, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 1],
+        [1, 0, 0, 0]
+        ])
+    with pytest.raises(PyraminInterposeError):
+        guide2.solve_if_ONE([
+            [0, 4, 2, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [2, 0, 4, 1]
+            ])
+
+
+# tests filling table when there is n in guide
 
 def test_if_N_in_row_0():
     guide1 = Solver([

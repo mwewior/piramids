@@ -172,15 +172,18 @@ wartości wysokości piramid
         n = self.lenght()
         for row in range(4):
             for col in range(n):
-                if self.guide()[row][col] == 1:
-                    if row == 0:
-                        self.interposer(table, 0, col, n)
-                    if row == 1:
-                        self.interposer(table, n-1, col, n)
-                    if row == 2:
-                        self.interposer(table, col, 0, n)
-                    if row == 3:
-                        self.interposer(table, col, n-1, n)
+                try:
+                    if self.guide()[row][col] == 1:
+                        if row == 0:
+                            self.interposer(table, 0, col, n)
+                        if row == 1:
+                            self.interposer(table, n-1, col, n)
+                        if row == 2:
+                            self.interposer(table, col, 0, n)
+                        if row == 3:
+                            self.interposer(table, col, n-1, n)
+                except PyraminInterposeError:
+                    raise PyraminInterposeError()
         return self.set_table(table)
 
     def solve_if_N(self, prev_table=None):
