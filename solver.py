@@ -40,8 +40,13 @@ class Solver:
         :param set_table: overwrites the  previous table with new solutions
         :type set_table: list
 
-        :param solve_if_X: reads the guide and sets proper value in the table
+        :param is_correct: checks if there is no contradiction while solving
+        :type is_correct: Bool
+
+        :param solve_if_X: reads the guide and overwrites
+        proper values in the table
         :type solve_if_X: list
+
     """
 
     def __init__(self, guide: list):
@@ -149,92 +154,74 @@ wartości wysokości piramid
                         return False
             return True
 
+    def interposer(self, table, in1, in2, v):
+        """
+        (table is a list of list)
+        where:
+            id1 - indexes of the first list
+            id2 - indexes of the second list
+            v - value that will overwrite 0
+        """
+        if table[in1][in2] == 0 or table[in1][in2] == v:
+            table[in1][in2] = v
+        else:
+            raise PyraminInterposeError()
+
     def solve_if_ONE(self, prev_table=None):
         table = self.set_table(prev_table)
         n = self.lenght()
-        for row in range(n):
-            # patrząc od góry
-            if self.guide()[0][row] == 1:
-                if table[0][row] == 0 or table[0][row] == n:
-                    table[0][row] = n
-                else:
-                    raise PyraminInterposeError()
-            # patrząc od dołu
-            if self.guide()[1][row] == 1:
-                if table[n-1][row] == 0 or table[n-1][row] == n:
-                    table[n-1][row] = n
-                else:
-                    raise PyraminInterposeError()
-            # patrząc od lewej
-            if self.guide()[2][row] == 1:
-                if table[row][0] == 0 or table[row][0] == n:
-                    table[row][0] = n
-                else:
-                    raise PyraminInterposeError()
-            # patrząc od prawej
-            if self.guide()[3][row] == 1:
-                if table[row][n-1] == 0 or table[row][n-1] == n:
-                    table[row][n-1] = n
-                else:
-                    raise PyraminInterposeError()
+        for row in range(4):
+            for col in range(n):
+                if self.guide()[row][col] == 1:
+                    if row == 0:
+                        self.interposer(table, 0, col, n)
+                    if row == 1:
+                        self.interposer(table, n-1, col, n)
+                    if row == 2:
+                        self.interposer(table, col, 0, n)
+                    if row == 3:
+                        self.interposer(table, col, n-1, n)
         return self.set_table(table)
 
     def solve_if_N(self, prev_table=None):
         table = self.set_table(prev_table)
         n = self.lenght()
-        for col in range(n):
-            # patrząc od  góry
-            if self.guide()[0][col] == n:
-                for val in range(n):
-                    if table[val][col] == 0 or table[val][col] == val + 1:
-                        table[val][col] = val + 1
+        for row in range(4):
+            for col in range(n):
+                index_list = list(range(n))
+                for val in index_list:
+                    if row == 1 or row == 3:
+                        value = index_list[-val - 1] + 1
                     else:
-                        raise PyraminInterposeError()
-            # patrząc od dołu
-            if self.guide()[1][col] == n:
-                i = list(range(n))
-                for val in i:
-                    value = i[-val - 1] + 1
-                    if table[val][col] == 0 or table[val][col] == value:
-                        table[val][col] = value
-                    else:
-                        raise PyraminInterposeError()
-            # patrząc od lewej
-            if self.guide()[2][col] == n:
-                for val in range(n):
-                    if table[col][val] == 0 or table[col][val] == val + 1:
-                        table[col][val] = val + 1
-                    else:
-                        raise PyraminInterposeError()
-            # patrząc od prawej
-            if self.guide()[3][col] == n:
-                i = list(range(n))
-                for val in i:
-                    value = i[-val - 1] + 1
-                    if table[col][val] == 0 or table[col][val] == value:
-                        table[col][val] = value
-                    else:
+                        value = val + 1
+                    try:
+                        if self.guide()[row][col] == n:
+                            if row == 0 or row == 1:
+                                self.interposer(table, val, col, value)
+                            if row == 2 or row == 3:
+                                self.interposer(table, col, val, value)
+                    except PyraminInterposeError:
                         raise PyraminInterposeError()
         return self.set_table(table)
 
-    # ### wstępne implementacje funkcji wyjściowych
+# ### wstępne implementacje funkcji wyjściowych
 
-    # def final_table(self):
-    #     pass
+# def final_table(self):
+#     pass
 
-    # def show(self):
-    #     if self.final_table():
-    #         for row in self.final_table():
-    #             for point in range(len(row)):
-    #                 row[point] = str(row[point])
-    #         str_table = []
-    #         for old_row in self.final_table():
-    #             new_row = "".join(old_row)
-    #             str_table.append(new_row)
-    #         output_string = '\n'
-    #         for z in str_table:
-    #             str_row = f'{z}\n'
-    #             output_string += str_row
-    #         return output_string
-    #     else:
-    #         return f'zadania nie da się rozwiązać.'
+# def show(self):
+#     if self.final_table():
+#         for row in self.final_table():
+#             for point in range(len(row)):
+#                 row[point] = str(row[point])
+#         str_table = []
+#         for old_row in self.final_table():
+#             new_row = "".join(old_row)
+#             str_table.append(new_row)
+#         output_string = '\n'
+#         for z in str_table:
+#             str_row = f'{z}\n'
+#             output_string += str_row
+#         return output_string
+#     else:
+#         return f'zadania nie da się rozwiązać.'

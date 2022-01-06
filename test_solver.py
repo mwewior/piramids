@@ -410,8 +410,19 @@ def test_if_N_in_row_3():
     ]
 
 
-# def test_if_N_in_mix():
-#     pass
+def test_if_N_in_mix():
+    guidemix = Solver([
+        [4, 0, 0, 0],
+        [0, 0, 0, 4],
+        [4, 0, 0, 0],
+        [0, 0, 0, 4]
+    ])
+    assert guidemix.solve_if_N() == [
+        [1, 2, 3, 4],
+        [2, 0, 0, 3],
+        [3, 0, 0, 2],
+        [4, 3, 2, 1]
+    ]
 
 
 def test_if_N_invalid_previous_table():
