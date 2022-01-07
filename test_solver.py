@@ -557,7 +557,9 @@ def test_is_correct_true():
         [2, 3, 1, 4],
         [3, 1, 0, 0]
         ]
-    assert random.is_rows_and_cols_correct(table) is True
+    assert random.is_row_correct(table) is True
+    assert random.is_collumn_correct(table) is True
+    assert random.is_table_correct(table) is True
 
     another = Solver([
         [0, 0, 0, 0, 0, 0, 0],
@@ -574,11 +576,13 @@ def test_is_correct_true():
         [2, 0, 7, 5, 1, 6, 3],
         [1, 6, 5, 0, 4, 2, 7],
     ]
-    assert another.is_rows_and_cols_correct(x8) is True
+    assert another.is_row_correct(x8) is True
+    assert another.is_collumn_correct(x8) is True
+    assert another.is_table_correct(x8) is True
 
 
-def test_is_correct_false():
-    first = Solver([
+def test_is_correct_some_as_false():
+    split = Solver([
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
@@ -602,6 +606,15 @@ def test_is_correct_false():
         [4, 0, 1, 4],
         [0, 2, 2, 0]
     ]
-    assert first.is_rows_and_cols_correct(table1) is False
-    assert first.is_rows_and_cols_correct(table2) is False
-    assert first.is_rows_and_cols_correct(table3) is False
+
+    assert split.is_row_correct(table1) is False
+    assert split.is_row_correct(table2) is True
+    assert split.is_row_correct(table3) is False
+
+    assert split.is_collumn_correct(table1) is True
+    assert split.is_collumn_correct(table2) is False
+    assert split.is_collumn_correct(table3) is False
+
+    assert split.is_table_correct(table1) is False
+    assert split.is_table_correct(table2) is False
+    assert split.is_table_correct(table3) is False
