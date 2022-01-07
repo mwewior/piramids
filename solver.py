@@ -127,9 +127,9 @@ wartości wysokości piramid
                         )
         return overwritten_table
 
-    def is_rows_and_cols_correct(self, table=None):
+    def is_row_correct(self, table=None):
         """
-        cheks if the numbers occure only once in the row or the column of table
+        cheks if the numbers occure only once in the row of the table
         """
         n = self.lenght()
         if table is None:
@@ -138,20 +138,43 @@ wartości wysokości piramid
             for i in range(n):
                 a = []
                 for elem in table[i]:
-                    if elem != 0:
+                    if type(elem) is int and elem != 0:
                         a.append(elem)
-                        a.sort()
+                    a.sort()
                 b = list(set(a))
+                if len(a) == 0:
+                    pass
                 if a != b:
                     return False
+        return True
+
+    def is_collumn_correct(self, table=None):
+        """
+        cheks if the numbers occure only once in the column of the table
+        """
+        n = self.lenght()
+        if table is None:
+            pass
+        else:
+            for i in range(n):
                 column = []
                 for j in range(n):
-                    if table[j][i] != 0:
+                    if type(table[j][i]) is int and table[j][i] != 0:
                         column.append(table[j][i])
-                        column.sort()
+                    column.sort()
+                if len(column) == 0:
+                    pass
                 if column != list(set(column)):
                     return False
+        return True
+
+    def is_table_correct(self, table=None):
+        row = self.is_row_correct(table)
+        col = self.is_collumn_correct(table)
+        if row is True and col is True:
             return True
+        else:
+            return False
 
     def interposer(self, table, in1, in2, v):
         """
@@ -206,7 +229,11 @@ wartości wysokości piramid
                         raise PyraminInterposeError()
         return self.set_table(table)
 
-    # def solve_if_OTHERS(self, prev_table=None):
+    def solve_if_OTHERS(self, prev_table=None):
+        # pozycja piramidy o wysokości N jest na pozycji
+        # między K (wartość podpowiedzi != 1 i != N) a N
+        pass
+
     #     table = self.set_table(prev_table)
     #     n = self.lenght()
     #     for row in range(4):
