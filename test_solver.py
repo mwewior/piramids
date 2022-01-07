@@ -311,12 +311,12 @@ def test_if_ONE_in_mix():
     assert guide.solve_if_ONE([
         [0, 4, 0, 1],
         [0, 2, 3, 0],
-        [2, 3, 4, 0],
+        [2, 3, 1, 0],
         [3, 1, 0, 0]
     ]) == [
         [0, 4, 0, 1],
         [4, 2, 3, 0],
-        [2, 3, 4, 4],
+        [2, 3, 1, 4],
         [3, 1, 0, 0]
     ]
 
@@ -508,3 +508,100 @@ def test_if_N_invalid_previous_table():
             [0, 0, 0, 0],
             [0, 0, 4, 1]]
         )
+
+
+def test_if_ONE_and_N_mixed():
+    guide = Solver([
+        [0, 1, 4, 2],
+        [0, 4, 0, 2],
+        [0, 0, 0, 0],
+        [2, 0, 1, 0]
+    ])
+
+    x = guide.solve_if_N(guide.solve_if_ONE())
+    assert x == [
+        [0, 4, 1, 0],
+        [0, 3, 2, 0],
+        [0, 2, 3, 4],
+        [0, 1, 4, 0]
+    ]
+
+    tip = Solver([
+        [1, 2, 5, 4, 2, 6],
+        [0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0],
+        [6, 0, 0, 0, 0, 0]
+    ])
+
+    y = tip.solve_if_ONE()
+    assert tip.solve_if_N(y) == [
+        [6, 5, 4, 3, 2, 1],
+        [0, 0, 0, 0, 0, 2],
+        [0, 0, 0, 0, 0, 3],
+        [0, 0, 0, 0, 0, 4],
+        [0, 0, 0, 0, 0, 5],
+        [0, 0, 0, 0, 0, 6]
+    ]
+
+
+def test_is_correct_true():
+    random = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ])
+    table = [
+        [0, 4, 0, 1],
+        [4, 2, 3, 0],
+        [2, 3, 1, 4],
+        [3, 1, 0, 0]
+        ]
+    assert random.is_rows_and_cols_correct(table) is True
+
+    another = Solver([
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+    ])
+    x8 = [
+        [7, 5, 1, 2, 3, 4, 6],
+        [6, 3, 4, 7, 2, 1, 5],
+        [5, 4, 2, 3, 6, 7, 1],
+        [4, 1, 6, 0, 5, 3, 2],
+        [3, 2, 0, 1, 7, 5, 4],
+        [2, 0, 7, 5, 1, 6, 3],
+        [1, 6, 5, 0, 4, 2, 7],
+    ]
+    assert another.is_rows_and_cols_correct(x8) is True
+
+
+def test_is_correct_false():
+    first = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ])
+    table1 = [
+        [0, 2, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ]
+    table2 = [
+        [0, 1, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 1, 0, 0]
+    ]
+    table3 = [
+        [0, 3, 2, 0],
+        [0, 3, 0, 0],
+        [4, 0, 1, 4],
+        [0, 2, 2, 0]
+    ]
+    assert first.is_rows_and_cols_correct(table1) is False
+    assert first.is_rows_and_cols_correct(table2) is False
+    assert first.is_rows_and_cols_correct(table3) is False
