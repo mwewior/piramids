@@ -558,7 +558,7 @@ def test_is_correct_true():
         [3, 1, 0, 0]
         ]
     assert random.is_row_correct(table) is True
-    assert random.is_collumn_correct(table) is True
+    assert random.is_column_correct(table) is True
     assert random.is_table_correct(table) is True
 
     another = Solver([
@@ -577,7 +577,7 @@ def test_is_correct_true():
         [1, 6, 5, 0, 4, 2, 7],
     ]
     assert another.is_row_correct(x8) is True
-    assert another.is_collumn_correct(x8) is True
+    assert another.is_column_correct(x8) is True
     assert another.is_table_correct(x8) is True
 
 
@@ -611,10 +611,192 @@ def test_is_correct_some_as_false():
     assert split.is_row_correct(table2) is True
     assert split.is_row_correct(table3) is False
 
-    assert split.is_collumn_correct(table1) is True
-    assert split.is_collumn_correct(table2) is False
-    assert split.is_collumn_correct(table3) is False
+    assert split.is_column_correct(table1) is True
+    assert split.is_column_correct(table2) is False
+    assert split.is_column_correct(table3) is False
 
     assert split.is_table_correct(table1) is False
     assert split.is_table_correct(table2) is False
     assert split.is_table_correct(table3) is False
+
+
+def test_zero_to_list():
+    pyramids = Solver([
+        [0, 1, 4, 2],
+        [0, 4, 0, 2],
+        [0, 0, 0, 0],
+        [2, 0, 1, 0]
+    ])
+
+    zeros = pyramids.solve_if_N(pyramids.solve_if_ONE())
+    lists = pyramids.zero_into_list(zeros)
+
+    assert lists == [
+        [[1, 2, 3, 4], 4, 1, [1, 2, 3, 4]],
+        [[1, 2, 3, 4], 3, 2, [1, 2, 3, 4]],
+        [[1, 2, 3, 4], 2, 3, 4],
+        [[1, 2, 3, 4], 1, 4, [1, 2, 3, 4]]
+    ]
+
+
+def test_limiter_rows_then_column():
+    board = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ])
+    first = [
+        [[1, 2, 3, 4], 4, 1, [1, 2, 3, 4]],
+        [[1, 2, 3, 4], 3, 2, [1, 2, 3, 4]],
+        [[1, 2, 3, 4], 2, 3, 4],
+        [[1, 2, 3, 4], 1, 4, [1, 2, 3, 4]]
+    ]
+
+    row_reduction = board.limiter_row(first)
+    assert row_reduction == [
+        [[2, 3], 4, 1, [2, 3]],
+        [[1, 4], 3, 2, [1, 4]],
+        [1, 2, 3, 4],
+        [[2, 3], 1, 4, [2, 3]]
+    ]
+
+    column_reduction = board.limiter_column(row_reduction)
+    assert column_reduction == [
+        [[2, 3], 4, 1, [2, 3]],
+        [4, 3, 2, 1],
+        [1, 2, 3, 4],
+        [[2, 3], 1, 4, [2, 3]]
+    ]
+
+
+def test_reduce_left():
+    solver = Solver([
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 2, 3, 4, 4],
+        [0, 0, 0, 0, 0]
+    ])
+    board = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 2, 0, 0, 0],
+        [5, 0, 0, 0, 0]
+    ]
+    newone = solver.zero_into_list(board)
+    reduced = solver.reduce_from_guide_left(newone)
+    assert reduced == [
+        [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5]],
+        [[1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5]],
+        [[1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5]],
+        [[1, 2], 2, [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]],
+        [5, [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
+    ]
+
+
+def test_reduce_right():
+    solver = Solver([
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [3, 4, 2, 4, 0]
+    ])
+    board = [
+        [1, 0, 0, 0, 0],
+        [2, 0, 0, 0, 0],
+        [3, 0, 0, 1, 0],
+        [4, 0, 3, 0, 0],
+        [5, 0, 0, 0, 2]
+    ]
+    newone = solver.zero_into_list(board)
+    reduced = solver.reduce_from_guide_right(newone)
+    assert reduced == [
+        [1, [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4], [1, 2, 3]],
+        [2, [1, 2, 3, 4, 5], [1, 2, 3, 4], [1, 2, 3], [1, 2]],
+        [3, [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 1, [1, 2, 3, 4]],
+        [4, [1, 2, 3, 4, 5], 3, [1, 2, 3], [1, 2]],
+        [5, [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 2],
+    ]
+
+
+def test_reduce_top():
+    solver = Solver([
+        [2, 4, 0, 3, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ])
+    board = [
+        [0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 4],
+        [0, 0, 0, 0, 3],
+        [0, 2, 0, 0, 5],
+        [0, 0, 0, 0, 2]
+    ]
+    newone = solver.zero_into_list(board)
+    reduced = solver.reduce_from_guide_top(newone)
+    assert reduced == [
+      [[1, 2, 3, 4], [1, 2], [1, 2, 3, 4, 5], [1, 2, 3], 1],
+      [[1, 2, 3, 4, 5], [1, 2, 3], [1, 2, 3, 4, 5], [1, 2, 3, 4], 4],
+      [[1, 2, 3, 4, 5], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 3],
+      [[1, 2, 3, 4, 5], 2, [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 5],
+      [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 2]
+    ]
+
+
+def test_reduce_bottom():
+    solver = Solver([
+        [0, 0, 0, 0, 0],
+        [4, 0, 2, 3, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ])
+    board = [
+        [0, 0, 0, 0, 5],
+        [0, 0, 0, 0, 4],
+        [0, 0, 0, 0, 3],
+        [0, 0, 0, 0, 2],
+        [0, 0, 0, 0, 1]
+    ]
+    newone = solver.zero_into_list(board)
+    reduced = solver.reduce_from_guide_bottom(newone)
+    assert reduced == [
+      [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 5],
+      [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 4],
+      [[1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], 3],
+      [[1, 2, 3], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4], 2],
+      [[1, 2], [1, 2, 3, 4, 5], [1, 2, 3, 4], [1, 2, 3], 1]
+    ]
+
+
+def test_reduce_mixed():
+    mixer = Solver([
+        [0, 0, 0, 0, 0],
+        [4, 4, 0, 1, 0],
+        [0, 2, 3, 3, 0],
+        [3, 4, 0, 0, 0]
+    ])
+    tablica = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 5, 0]
+    ]
+    lister = mixer.zero_into_list(tablica)
+    shorted = mixer.reduce_from_guide_overall(lister)
+
+    assert shorted == [
+        [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4],
+            [1, 2, 3]],
+        [[1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4], [1, 2, 3], [1, 2]],
+        [[1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5]],
+        [[1, 2, 3], [1, 2, 3], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5]],
+        [[1, 2], [1, 2], [1, 2, 3, 4, 5], 5, [1, 2, 3, 4, 5]],
+    ]
