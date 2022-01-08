@@ -121,10 +121,11 @@ wartości wysokości piramid
             n = self.lenght()
             for i in range(n):
                 for j in range(n):
-                    if int(overwritten_table[i][j]) > n:
-                        raise InvalidTableError(
-                            "Height of pyramid on table is incorrect"
-                        )
+                    if type(overwritten_table[i][j]) is int:
+                        if int(overwritten_table[i][j]) > n:
+                            raise InvalidTableError(
+                                "Height of pyramid on table is incorrect"
+                            )
         return overwritten_table
 
     def is_row_correct(self, table=None):
@@ -148,7 +149,7 @@ wartości wysokości piramid
                     return False
         return True
 
-    def is_collumn_correct(self, table=None):
+    def is_column_correct(self, table=None):
         """
         cheks if the numbers occure only once in the column of the table
         """
@@ -170,7 +171,7 @@ wartości wysokości piramid
 
     def is_table_correct(self, table=None):
         row = self.is_row_correct(table)
-        col = self.is_collumn_correct(table)
+        col = self.is_column_correct(table)
         if row is True and col is True:
             return True
         else:
@@ -229,10 +230,98 @@ wartości wysokości piramid
                         raise PyraminInterposeError()
         return self.set_table(table)
 
-    def solve_if_OTHERS(self, prev_table=None):
-        # pozycja piramidy o wysokości N jest na pozycji
-        # między K (wartość podpowiedzi != 1 i != N) a N
-        pass
+    def zero_into_list(self, prev_table=None):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        for i in range(n):
+            for j in range(n):
+                if table[i][j] == 0:
+                    table[i][j] = list(range(1, n+1))
+        return table
+
+    def reduce_from_guide_overall(self, prev_table):
+        t1 = self.reduce_from_guide_top(prev_table)
+        t2 = self.reduce_from_guide_bottom(t1)
+        t3 = self.reduce_from_guide_left(t2)
+        table = self.reduce_from_guide_right(t3)
+        return table
+
+    def reduce_from_guide_top(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        values = self.guide()[0]
+        for i in range(n):
+            value = values[i]
+            if value == 0 or value == 1 or value == n:
+                pass
+            else:
+                x = value - 1
+                for p in range(x):
+                    for y in range(x-p):
+                        t = table[y][i]
+                        if type(t) is list:
+                            if n-p in table[y][i]:
+                                t.remove(n-p)
+        return table
+
+    def reduce_from_guide_bottom(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        values = self.guide()[1]
+        for i in range(n):
+            value = values[i]
+            if value == 0 or value == 1 or value == n:
+                pass
+            else:
+                x = value - 1
+                for p in range(x):
+                    for y in range(x-p):
+                        t = table[-(y+1)][i]
+                        if type(t) is list:
+                            if n-p in table[-(y+1)][i]:
+                                t.remove(n-p)
+        return table
+
+    def reduce_from_guide_left(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        values = self.guide()[2]
+        for i in range(n):
+            value = values[i]
+            if value == 0 or value == 1 or value == n:
+                pass
+            else:
+                x = value - 1
+                for p in range(x):
+                    for y in range(x-p):
+                        t = table[i][y]
+                        if type(t) is list:
+                            if n-p in table[i][y]:
+                                t.remove(n-p)
+        return table
+
+    def reduce_from_guide_right(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        values = self.guide()[3]
+        for i in range(n):
+            value = values[i]
+            if value == 0 or value == 1 or value == n:
+                pass
+            else:
+                x = value - 1
+                for p in range(x):
+                    for y in range(x-p):
+                        t = table[i][-(y+1)]
+                        if type(t) is list:
+                            if n-p in table[i][-(y+1)]:
+                                t.remove(n-p)
+        return table
+
+    # def solve_if_OTHERS(self, prev_table=None):
+    #     # pozycja piramidy o wysokości N jest na pozycji
+    #     # między K (wartość podpowiedzi != 1 i != N) a N
+    #     pass
 
     #     table = self.set_table(prev_table)
     #     n = self.lenght()
