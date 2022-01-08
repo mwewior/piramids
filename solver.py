@@ -318,6 +318,63 @@ wartości wysokości piramid
                                 t.remove(n-p)
         return table
 
+    def unlist_single_value(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        for i in range(n):
+            for j in range(n):
+                if type(table[i][j]) is list:
+                    if len(table[i][j]) == 1:
+                        table[i][j] = table[i][j][0]
+        return table
+
+    def limit_potential_solutions(self, prev_table):
+        base_table = self.set_table(prev_table)
+        x = True
+        old_table = base_table
+        while x is True:
+            t1 = self.limiter_row(old_table)
+            new_table = self.limiter_column(t1)
+            if new_table != old_table:
+                x = True
+                old_table = new_table
+            else:
+                x = False
+                finnished_table = new_table
+        return finnished_table
+
+    def limiter_row(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        for i in range(n):
+            rows = []
+            for j in range(n):
+                if type(table[i][j]) is int:
+                    rows.append(table[i][j])
+            for k in range(n):
+                if type(table[i][k]) is list:
+                    for elem in rows:
+                        if elem in table[i][k]:
+                            table[i][k].remove(elem)
+        table = self.unlist_single_value(table)
+        return table
+
+    def limiter_column(self, prev_table):
+        table = self.set_table(prev_table)
+        n = self.lenght()
+        for i in range(n):
+            cols = []
+            for j in range(n):
+                if type(table[j][i]) is int:
+                    cols.append(table[j][i])
+            for k in range(n):
+                if type(table[k][i]) is list:
+                    for elem in cols:
+                        if elem in table[k][i]:
+                            table[k][i].remove(elem)
+        table = self.unlist_single_value(table)
+        return table
+
     # def solve_if_OTHERS(self, prev_table=None):
     #     # pozycja piramidy o wysokości N jest na pozycji
     #     # między K (wartość podpowiedzi != 1 i != N) a N
