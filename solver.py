@@ -25,6 +25,10 @@ class InvalidTableError(Exception):
     pass
 
 
+class SubstituteError(Exception):
+    pass
+
+
 class Solver:
     """
     class Solver. Contains atributes:
@@ -430,35 +434,157 @@ wartości wysokości piramid
                                         table[index-1][i] = value
         return table
 
-    # def solve_if_OTHERS(self, prev_table=None):
-    #     # pozycja piramidy o wysokości N jest na pozycji
-    #     # między K (wartość podpowiedzi != 1 i != N) a N
-    #     pass
+    def comapre_with_guide(self, prev_table):
+        pass
 
-    #     table = self.set_table(prev_table)
+    ###
+
+    def compare_top(self, prev_table):
+        pass
+
+    def counter_top(self, table):
+        """
+        compare the growth of the pyramids with guidance values
+        """
+        n = self.lenght()
+        for i in range(n):
+            value = self.guide()[0][i]
+            for j in range(1, n+1):
+                if type(table[i][-j]) is not int:
+                    raise SubstituteError
+            if value != 0:
+                grow = 1
+                last_one = table[0][i]
+                for k in range(n-1):
+                    if table[k+1][i] > last_one:
+                        grow = grow + 1
+                        last_one = table[k+1][i]
+                if grow != value:
+                    return False
+        return True
+
+    ###
+
+    def compare_bottom(self, prev_table):
+        pass
+
+    def counter_bottom(self, table):
+        """
+        compare the growth of the pyramids with guidance values
+        """
+        n = self.lenght()
+        for i in range(n):
+            value = self.guide()[1][i]
+            for j in range(1, n+1):
+                if type(table[i][-j]) is not int:
+                    raise SubstituteError
+            if value != 0:
+                grow = 1
+                last_one = table[-1][i]
+                for k in range(1, n):
+                    if table[-(k+1)][i] > last_one:
+                        grow = grow + 1
+                        last_one = table[-(k+1)][i]
+                if grow != value:
+                    return False
+        return True
+
+    ###
+
+    # def compare_left(self, prev_table):
+    #     table = prev_table
+    #     # first_table = copy.deepcopy(table)
     #     n = self.lenght()
-    #     for row in range(4):
-    #         for col in range(n):
-    #             pass
+    #     for i in range(n):
+    #         value = self.guide()[2][i]
+    #         if value > 1:
+    #             liczba_list = 0
+    #             for elems in table[i]:
+    #                 if type(elems) is list:
+    #                     liczba_list = liczba_list + 1
+    #                 if elems == n:
+    #                     break
+    #             if liczba_list == value - 1:
+    #                 if table[i][value-1] == n:
+    #                     for j in range(value-1):
+    #                         if type(table[i][j]) is list:
+    #                             table[i][j] = min(table[i][j])
+    #                         self.limit_potential_solutions(table)
+    #     return table
 
-    # ### wstępne implementacje funkcji wyjściowych
+    def counter_left(self, table):
+        """
+        compare the growth of the pyramids with guidance values
+        """
+        n = self.lenght()
+        for i in range(n):
+            value = self.guide()[2][i]
+            for j in range(n):
+                if type(table[i][j]) is not int:
+                    raise SubstituteError
+            if value != 0:
+                grow = 1
+                last_one = table[i][0]
+                for k in range(n-1):
+                    if table[i][k+1] > last_one:
+                        grow = grow + 1
+                        last_one = table[i][k+1]
+                if grow != value:
+                    return False
+        return True
 
-    # def final_table(self):
-    #     pass
+    ###
 
-    # def show(self):
-    #     if self.final_table():
-    #         for row in self.final_table():
-    #             for point in range(len(row)):
-    #                 row[point] = str(row[point])
-    #         str_table = []
-    #         for old_row in self.final_table():
-    #             new_row = "".join(old_row)
-    #             str_table.append(new_row)
-    #         output_string = '\n'
-    #         for z in str_table:
-    #             str_row = f'{z}\n'
-    #             output_string += str_row
-    #         return output_string
+    # def compare_right(self, prev_table):
+    #     table = prev_table
+    #     # first_table = copy.deepcopy(table)
+    #     n = self.lenght()
+    #     for i in range(n):
+    #         value = self.guide()[3][i]
+    #         if value > 0:
+    #             liczba_list = 0
+    #             for elems in table[i][::-1]:
+    #                 if type(elems) is list:
+    #                     liczba_list = liczba_list + 1
+    #                 if elems == n:
+    #                     break
+    #             if liczba_list <= value:
+    #                 if table[i][-value] == n:
+    #                     for j in range(1, value):
+    #                         if type(table[i][-j]) is list:
+    #                             table[i][-j] = min(table[i][-j])
+    #                         self.limit_potential_solutions(table)
+    #     if self.is_table_correct(table):
+    #         return table
     #     else:
-    #         return f'zadania nie da się rozwiązać.'
+    #         pass
+
+    def counter_right(self, table):
+        """
+        compare the growth of the pyramids with guidance values
+        """
+        n = self.lenght()
+        for i in range(n):
+            value = self.guide()[3][i]
+            for j in range(1, n+1):
+                if type(table[i][-j]) is not int:
+                    raise SubstituteError
+            if value != 0:
+                grow = 1
+                last_one = table[i][-1]
+                for k in range(1, n):
+                    if table[i][-(k+1)] > last_one:
+                        grow = grow + 1
+                        last_one = table[i][-(k+1)]
+                if grow != value:
+                    return False
+        return True
+
+    def try_random(self, table):
+        """
+        plan żeby podstawił jakąś najbardziej prawdopodobną wartość
+        i spróbował dla niej dalej rozwiązać
+
+        potem sprawdza czy jest okej ( is_coorect(), counter() )
+        """
+        pass
