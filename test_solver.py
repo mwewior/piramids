@@ -800,3 +800,23 @@ def test_limiter_rows_then_column():
         [1, 2, 3, 4],
         [[2, 3], 1, 4, [2, 3]]
     ]
+
+
+def test_counters():
+    guide = Solver([
+        [1, 0, 0, 3],
+        [0, 1, 0, 0],
+        [0, 0, 4, 0],
+        [0, 0, 0, 3]
+    ])
+    tab = guide.set_table([
+        [4, 3, 1, 2],
+        [2, 1, 4, 3],
+        [1, 2, 3, 4],
+        [3, 4, 2, 1]
+    ])
+
+    assert guide.counter_top(tab) is True
+    assert guide.counter_bottom(tab) is True
+    assert guide.counter_left(tab) is True
+    assert guide.counter_right(tab) is True
