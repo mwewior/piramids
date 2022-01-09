@@ -639,37 +639,6 @@ def test_zero_to_list():
     ]
 
 
-def test_limiter_rows_then_column():
-    board = Solver([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ])
-    first = [
-        [[1, 2, 3, 4], 4, 1, [1, 2, 3, 4]],
-        [[1, 2, 3, 4], 3, 2, [1, 2, 3, 4]],
-        [[1, 2, 3, 4], 2, 3, 4],
-        [[1, 2, 3, 4], 1, 4, [1, 2, 3, 4]]
-    ]
-
-    row_reduction = board.limiter_row(first)
-    assert row_reduction == [
-        [[2, 3], 4, 1, [2, 3]],
-        [[1, 4], 3, 2, [1, 4]],
-        [1, 2, 3, 4],
-        [[2, 3], 1, 4, [2, 3]]
-    ]
-
-    column_reduction = board.limiter_column(row_reduction)
-    assert column_reduction == [
-        [[2, 3], 4, 1, [2, 3]],
-        [4, 3, 2, 1],
-        [1, 2, 3, 4],
-        [[2, 3], 1, 4, [2, 3]]
-    ]
-
-
 def test_reduce_left():
     solver = Solver([
         [0, 0, 0, 0, 0],
@@ -799,4 +768,35 @@ def test_reduce_mixed():
         [[1, 2, 3], [1, 2, 3], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5],
             [1, 2, 3, 4, 5]],
         [[1, 2], [1, 2], [1, 2, 3, 4, 5], 5, [1, 2, 3, 4, 5]],
+    ]
+
+
+def test_limiter_rows_then_column():
+    board = Solver([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ])
+    first = [
+        [[1, 2, 3, 4], 4, 1, [1, 2, 3, 4]],
+        [[1, 2, 3, 4], 3, 2, [1, 2, 3, 4]],
+        [[1, 2, 3, 4], 2, 3, 4],
+        [[1, 2, 3, 4], 1, 4, [1, 2, 3, 4]]
+    ]
+
+    row_reduction = board.limiter_row(first)
+    assert row_reduction == [
+        [[2, 3], 4, 1, [2, 3]],
+        [[1, 4], 3, 2, [1, 4]],
+        [1, 2, 3, 4],
+        [[2, 3], 1, 4, [2, 3]]
+    ]
+
+    column_reduction = board.limiter_column(row_reduction)
+    assert column_reduction == [
+        [[2, 3], 4, 1, [2, 3]],
+        [4, 3, 2, 1],
+        [1, 2, 3, 4],
+        [[2, 3], 1, 4, [2, 3]]
     ]

@@ -36,6 +36,8 @@ def main():
     # 5) porównuje listy - jeśli w jakiejś liście jest taki element,
     #    który nie pojawiwa się w innych to go wpisujemy w pozycje na planszy
     # 6) kroki 4 i 5 powtarzamy dopóki można
+    # 7) gdy już nie da się skróić bardziej, to trzeba uwzględnić te opcje,
+    #    które są zgodne z podpowiedzią
 
 
 if __name__ == '__main__':
