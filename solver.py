@@ -1,3 +1,6 @@
+import copy
+
+
 class InvalidGuideError(Exception):
     """
     Raised when guide is in invalid format
@@ -329,16 +332,15 @@ wartości wysokości piramid
         return table
 
     def limit_potential_solutions(self, base_table):
-        # n = self.lenght()
         x = True
         temporary = base_table
-        if x is True:
-            old_table = temporary
+        old_table = copy.deepcopy(temporary)
+        while x is True:
             t1 = self.find_unique_in_row(self.limiter_row(temporary))
             new_table = self.find_unique_in_col(self.limiter_column(t1))
             if new_table != old_table:
                 x = True
-                old_table = new_table
+                old_table = copy.deepcopy(new_table)
             else:
                 x = False
                 finnished_table = new_table
