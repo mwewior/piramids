@@ -244,7 +244,7 @@ wartości wysokości piramid
         t2 = self.reduce_from_guide_bottom(t1)
         t3 = self.reduce_from_guide_left(t2)
         table = self.reduce_from_guide_right(t3)
-        return table
+        return self.unlist_single_value(table)
 
     def reduce_from_guide_top(self, prev_table):
         table = self.set_table(prev_table)
@@ -319,7 +319,7 @@ wartości wysokości piramid
         return table
 
     def unlist_single_value(self, prev_table):
-        table = self.set_table(prev_table)
+        table = prev_table
         n = self.lenght()
         for i in range(n):
             for j in range(n):
@@ -328,13 +328,14 @@ wartości wysokości piramid
                         table[i][j] = table[i][j][0]
         return table
 
-    def limit_potential_solutions(self, prev_table):
-        base_table = self.set_table(prev_table)
+    def limit_potential_solutions(self, base_table):
+        # n = self.lenght()
         x = True
-        old_table = base_table
-        while x is True:
-            t1 = self.limiter_row(old_table)
-            new_table = self.limiter_column(t1)
+        temporary = base_table
+        if x is True:
+            old_table = temporary
+            t1 = self.find_unique_in_row(self.limiter_row(temporary))
+            new_table = self.find_unique_in_col(self.limiter_column(t1))
             if new_table != old_table:
                 x = True
                 old_table = new_table
@@ -344,7 +345,7 @@ wartości wysokości piramid
         return finnished_table
 
     def limiter_row(self, prev_table):
-        table = self.set_table(prev_table)
+        table = prev_table
         n = self.lenght()
         for i in range(n):
             rows = []
@@ -360,7 +361,7 @@ wartości wysokości piramid
         return table
 
     def limiter_column(self, prev_table):
-        table = self.set_table(prev_table)
+        table = prev_table
         n = self.lenght()
         for i in range(n):
             cols = []
@@ -373,6 +374,58 @@ wartości wysokości piramid
                         if elem in table[k][i]:
                             table[k][i].remove(elem)
         table = self.unlist_single_value(table)
+        return table
+
+    def find_unique_in_row(self, prev_table):
+        new_table = prev_table
+        table = self.limiter_row(new_table)
+        n = self.lenght()
+        for repeat in range(n):
+            for i in range(n):
+                for value in range(1, n+1):
+                    counter = 0
+                    for elem in table[i]:
+                        if type(elem) is list:
+                            if value in elem:
+                                counter = counter + 1
+                                if counter > 1:
+                                    break
+                    if counter == 1:
+                        index = 0
+                        for elem in table[i]:
+                            index = index + 1
+                            if type(elem) is list:
+                                if value in elem:
+                                    if value not in table[i]:
+                                        table[i].remove(elem)
+                                        table[i].insert(index-1, value)
+        return table
+
+    def find_unique_in_col(self, prev_table):
+        new_table = prev_table
+        table = self.limiter_column(new_table)
+        n = self.lenght()
+        for repeat in range(n):
+            for i in range(n):
+                col = []
+                for j in range(n):
+                    col.append(table[j][i])
+                for value in range(1, n+1):
+                    counter = 0
+                    for elem in col:
+                        if type(elem) is list:
+                            if value in elem:
+                                counter = counter + 1
+                                if counter > 1:
+                                    break
+                    if counter == 1:
+                        index = 0
+                        for elem in col:
+                            index = index + 1
+                            if type(elem) is list:
+                                if value in elem:
+                                    if value not in col:
+                                        table[index-1][i] = value
         return table
 
     # def solve_if_OTHERS(self, prev_table=None):
