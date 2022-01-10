@@ -434,13 +434,16 @@ wartości wysokości piramid
                                         table[index-1][i] = value
         return table
 
-    def comapre_with_guide(self, prev_table):
-        pass
-
-    ###
-
-    def compare_top(self, prev_table):
-        pass
+    def check_guidance_prompts(self, table):
+        if self.counter_top(table) is False:
+            return False
+        if self.counter_bottom(table) is False:
+            return False
+        if self.counter_left(table) is False:
+            return False
+        if self.counter_right(table) is False:
+            return False
+        return True
 
     def counter_top(self, table):
         """
@@ -463,11 +466,6 @@ wartości wysokości piramid
                     return False
         return True
 
-    ###
-
-    def compare_bottom(self, prev_table):
-        pass
-
     def counter_bottom(self, table):
         """
         compare the growth of the pyramids with guidance values
@@ -488,29 +486,6 @@ wartości wysokości piramid
                 if grow != value:
                     return False
         return True
-
-    ###
-
-    # def compare_left(self, prev_table):
-    #     table = prev_table
-    #     # first_table = copy.deepcopy(table)
-    #     n = self.lenght()
-    #     for i in range(n):
-    #         value = self.guide()[2][i]
-    #         if value > 1:
-    #             liczba_list = 0
-    #             for elems in table[i]:
-    #                 if type(elems) is list:
-    #                     liczba_list = liczba_list + 1
-    #                 if elems == n:
-    #                     break
-    #             if liczba_list == value - 1:
-    #                 if table[i][value-1] == n:
-    #                     for j in range(value-1):
-    #                         if type(table[i][j]) is list:
-    #                             table[i][j] = min(table[i][j])
-    #                         self.limit_potential_solutions(table)
-    #     return table
 
     def counter_left(self, table):
         """
@@ -533,32 +508,6 @@ wartości wysokości piramid
                     return False
         return True
 
-    ###
-
-    # def compare_right(self, prev_table):
-    #     table = prev_table
-    #     # first_table = copy.deepcopy(table)
-    #     n = self.lenght()
-    #     for i in range(n):
-    #         value = self.guide()[3][i]
-    #         if value > 0:
-    #             liczba_list = 0
-    #             for elems in table[i][::-1]:
-    #                 if type(elems) is list:
-    #                     liczba_list = liczba_list + 1
-    #                 if elems == n:
-    #                     break
-    #             if liczba_list <= value:
-    #                 if table[i][-value] == n:
-    #                     for j in range(1, value):
-    #                         if type(table[i][-j]) is list:
-    #                             table[i][-j] = min(table[i][-j])
-    #                         self.limit_potential_solutions(table)
-    #     if self.is_table_correct(table):
-    #         return table
-    #     else:
-    #         pass
-
     def counter_right(self, table):
         """
         compare the growth of the pyramids with guidance values
@@ -580,11 +529,86 @@ wartości wysokości piramid
                     return False
         return True
 
-    def try_random(self, table):
+    def sort_possible_options(self, table):
+        #
         """
         plan żeby podstawił jakąś najbardziej prawdopodobną wartość
         i spróbował dla niej dalej rozwiązać
 
         potem sprawdza czy jest okej ( is_coorect(), counter() )
         """
-        pass
+        #
+        """
+        znajduje te pozycje na których listy są najkrótsze
+        dodaje je do listy z zapamietaniem ich indeksow
+        podstawia w nich dane
+        """
+        #
+        """
+        teraz posiada słownik, który patrzy na  ideksy w table
+        są to listy z potencjalnymi wartosciami
+        klucz: to ilość potencjalnych roz
+        wartosc: pozycja w tabeli gdzie ta lista sie znajduje
+        """
+        #
+
+        n = self.lenght()
+        probs = {}
+        for k in range(2, n+1):
+            probs[k] = []
+            for i in range(n):
+                for j in range(n):
+                    if type(table[i][j]) is list:
+                        if len(table[i][j]) == k:
+                            probs[k].append([i, j])
+        for k, v in probs.copy().items():
+            if v == []:
+                del probs[k]
+        return probs
+
+    def try_to_fill(self, table):
+        n = self.lenght()
+        # unchanged = copy.deepcopy(table)
+        options = self.sort_possible_options(table)
+        for k in range(2, n+1):
+            # options = self.sort_possible_options(table)
+            if k in options.keys():
+                for i in range(len(options[k])):
+                    indexes = options[k][i]
+                    base_list = table[indexes[0]][indexes[1]]
+                    if type(base_list) is list:
+                        for elem in base_list:
+                            new = self.fill_table_with(table, indexes, elem)
+                            if new[0] is True:
+                                return new[1]
+            # else:
+            #     pass
+
+    def fill_table_with(self, table, indexes, attempt):
+        unchanged = copy.deepcopy(table)
+        n = self.lenght()
+        table[indexes[0]][indexes[1]] = attempt
+        potential_one = self.limit_potential_solutions(table)
+        for i in range(n):
+            for j in range(n):
+                if type(table[i][j]) is not int:
+                    self.try_to_fill(potential_one)
+        if self.is_table_correct(potential_one) is True:
+            if self.check_guidance_prompts(potential_one) is True:
+                return (True, potential_one)
+        return (False, unchanged)
+
+        # """
+        # teraz musi z tych wspołrzednych wybierac kolejne listy
+        # i podstawia jenda z potencjalnych rozwiazan z tej listy
+        # potem prowadzone sa te limitery dla danej wartosci
+        # nastepnie sprawdza poprawnosc i countery()
+        # """
+        #
+        # """
+        # jesli jest cos nie tak to ma wrocic i wybrac kolejne elementy z list
+        # i tak do konca czyli az znajdzie poprawna tablice
+        #
+        # tworzy kopie tablicy i jesli bedzie tylko jedna tablica
+        # to bedzie to ostateczna
+        # """
