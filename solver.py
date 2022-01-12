@@ -599,19 +599,36 @@ wartości wysokości piramid
 
         # jescze do dopracowania
 
-        # info = self.get_stage_info(table, tree, stage)
-        # indeks = info[0][info[1]]['inexes']
-        # attempt = info[0][info[1]]['options']
-        # for i in attempt:
-        #     new_one = self.fill_table_with(table, index, attmpt, tree, stage)
-        #     new_table = new_one[0]
-        #     attempt = new_one[1]
-        #     pass
-
-        # if self.check_if_only_ints(new_one[0]) is False:
-        #     self.try_to_fill(new_one[0], )
-        # else:
-        #     pass
+        info = self.get_stage_info(table, tree, stage)
+        index = info[0][info[1]]['indexes']
+        attempt = info[0][info[1]]['options']
+        for i in attempt:
+            new_one = self.fill_table_with(table, index, attempt, tree, stage)
+            new_table = new_one[0]
+            updated_tree = new_one[1]
+            next_stage = new_one[2]
+            if self.check_if_only_ints(new_table) is False:
+                self.try_to_fill(new_table, updated_tree, next_stage)
+            else:
+                if self.is_everything_alright(new_table) is True:
+                    return new_table
+                else:
+                    del updated_tree[f'{next_stage}']
+                    stage = next_stage - 1
+                    pass
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+        #                                                     #
+        #        |.|                                          #
+        #        /\                                           #
+        #       /\                                            #
+        #   źle1  źle2                                        #
+        #                                                     #
+        #   nasuwa się pytanie jak wróicić z źle2 do |.|      #
+        #   i pójść w prawo a nie w lewo                      #
+        #       (np jest pomysł żeby usunąc wartość,          #
+        #       którą wcześniej się wybrało)                  #
+        #                                                     #
+        # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
         pass
 
