@@ -820,3 +820,59 @@ def test_counters():
     assert guide.counter_bottom(tab) is True
     assert guide.counter_left(tab) is True
     assert guide.counter_right(tab) is True
+
+
+def test_check_if_only_ints():
+    guide4 = Solver([
+        [1, 0, 0, 3],
+        [0, 1, 0, 0],
+        [0, 0, 4, 0],
+        [0, 0, 0, 3]
+    ])
+    guide5 = Solver([
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ])
+
+    tab41 = guide4.set_table([
+        [4, 3, 1, 2],
+        [2, 1, 4, 3],
+        [1, 2, 3, 4],
+        [3, 4, 2, 1]
+    ])
+    tab42 = guide4.set_table([
+        [[2, 3], 4, 1, [2, 3]],
+        [4, 3, 2, 1],
+        [1, 2, 3, 4],
+        [[2, 3], 1, 4, [2, 3]]
+    ])
+    tab43 = guide4.set_table([
+        [0, 1, 4, 2],
+        [0, 4, 0, 2],
+        [0, 0, 0, 0],
+        [2, 0, 1, 0]
+    ])
+
+    tab51 = guide5.set_table([
+        [2, 1, 4, 3, 5],
+        [5, 3, 2, 4, 1],
+        [1, 2, 3, 5, 4],
+        [4, 5, 1, 2, 3],
+        [3, 4, 5, 1, 2]
+    ])
+    tab52 = guide5.set_table([
+        [2, 1, 4, 3, 0],
+        [5, 3, 0, 4, 1],
+        [0, 2, 3, 0, 0],
+        [4, 0, 1, 2, 3],
+        [3, 4, 5, 1, 2]
+    ])
+
+    assert guide4.check_if_only_ints(tab41) is True
+    assert guide4.check_if_only_ints(tab42) is False
+    assert guide4.check_if_only_ints(tab43) is False
+
+    assert guide5.check_if_only_ints(tab51) is True
+    assert guide5.check_if_only_ints(tab52) is False
