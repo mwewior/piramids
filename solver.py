@@ -597,15 +597,15 @@ wartości wysokości piramid
         ways[stage] = []
         return ways
 
-    def fill_table_with(self, table, index, attempt, tree, stage):
+    def fill_table_with(self, table, index, attempt, tree, stage, end=None):
         table[index[0]][index[1]] = attempt
         self.limit_potential_solutions(table)
         if self.check_if_only_ints(table) is True:
             return (table, tree, stage)
         else:
             stage = stage + 1
-            updated_tree = self.get_stage_info(table, tree, stage)[0]
-            return (table, updated_tree, stage)
+            upd_tree = self.get_stage_info(table, tree, stage)[0]
+            return (table, upd_tree, stage)
 
     def try_to_fill(self, table, tree, ways, stage, backing=False):
         if backing is False:
@@ -616,42 +616,29 @@ wartości wysokości piramid
         else:
             index = tree[stage]['indexes']
             attempt = tree[stage]['options']
+
         for i in attempt:
             if i in tree[stage]['options']:
                 tree[stage]['options'].remove(i)
                 ways[stage].append(i)
             new_one = self.fill_table_with(table, index, i, tree, stage)
             new_table = new_one[0]
-            updated_tree = new_one[1]
+            upd_tree = new_one[1]
             next_stage = new_one[2]
             if self.check_if_only_ints(new_table) is False:
-                self.try_to_fill(new_table, updated_tree, ways, next_stage)
+                return self.try_to_fill(new_table, upd_tree, ways, next_stage)
             else:
                 if self.is_everything_alright(new_table) is not False:
                     correct_solution = copy.deepcopy(table)
-                    break
+                    solved = correct_solution
+                    return solved
                 else:
                     if len(tree[stage]['options']) != 0:
-                        q_table = updated_tree[stage]['table']
-                        get_back = True
-                        self.try_to_fill(q_table, tree, ways, stage, get_back)
+                        q_tab = upd_tree[stage]['table']
+                        back = True
+                        return self.try_to_fill(q_tab, tree, ways, stage, back)
                     else:
                         stage = stage - 1
-                        q_table = updated_tree[stage]['table']
-                        get_back = True
-                        self.try_to_fill(q_table, tree, ways, stage, get_back)
-        return correct_solution
-
-        # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-        #                                                     #
-        #        |.|                                          #
-        #        /\                                           #
-        #       /\                                            #
-        #   źle1  źle2                                        #
-        #                                                     #
-        #   nasuwa się pytanie jak wróicić z źle2 do |.|      #
-        #   i pójść w prawo a nie w lewo                      #
-        #       (np jest pomysł żeby usunąc wartość,          #
-        #       którą wcześniej się wybrało)                  #
-        #                                                     #
-        # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+                        q_tab = upd_tree[stage]['table']
+                        back = True
+                        return self.try_to_fill(q_tab, tree, ways, stage, back)
