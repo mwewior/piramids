@@ -541,7 +541,7 @@ wartości wysokości piramid
     def is_everything_alright(self, table):
         if self.is_table_correct(table) is True:
             if self.check_guidance_prompts(table) is True:
-                return table
+                return True
             else:
                 return False
         else:
@@ -573,9 +573,10 @@ wartości wysokości piramid
 
     def guess_solution(self, table):
         tree = {}
+        ways = {}
         stage = 0
-        self.get_stage_info(table, tree, stage)
-        pass
+        solved = self.try_to_fill(table, tree, ways, stage)
+        return solved
 
     def get_stage_info(self, table, tree: dict, stage):
         unchanged = copy.deepcopy(table)
@@ -584,38 +585,63 @@ wartości wysokości piramid
         tree[stage]['table'] = unchanged
         tree[stage]['indexes'] = way[0]
         tree[stage]['options'] = way[1]
-        last_stage = max(tree.keys())
+        involved_keys = []
+        for i in tree.keys():
+            if len(tree[i]['options']) > 0:
+                involved_keys.append(i)
+        last_stage = max(involved_keys)
         return (tree, last_stage)
         # ### można spróbować przetestować
+
+    def get_previous_way_info(self, ways: dict, stage):
+        ways[stage] = []
+        return ways
 
     def fill_table_with(self, table, index, attempt, tree, stage):
         table[index[0]][index[1]] = attempt
         self.limit_potential_solutions(table)
-        stage = stage + 1
-        updated_tree = self.get_stage_info(table, tree, stage)
-        return (table, updated_tree, stage)
+        if self.check_if_only_ints(table) is True:
+            return (table, tree, stage)
+        else:
+            stage = stage + 1
+            updated_tree = self.get_stage_info(table, tree, stage)[0]
+            return (table, updated_tree, stage)
 
-    def try_to_fill(self, table, tree, stage):
-
-        # jescze do dopracowania
-
-        info = self.get_stage_info(table, tree, stage)
-        index = info[0][info[1]]['indexes']
-        attempt = info[0][info[1]]['options']
+    def try_to_fill(self, table, tree, ways, stage, backing=False):
+        if backing is False:
+            info = self.get_stage_info(table, tree, stage)
+            ways = self.get_previous_way_info(ways, stage)
+            index = info[0][info[1]]['indexes']
+            attempt = info[0][info[1]]['options']
+        else:
+            index = tree[stage]['indexes']
+            attempt = tree[stage]['options']
         for i in attempt:
-            new_one = self.fill_table_with(table, index, attempt, tree, stage)
+            if i in tree[stage]['options']:
+                tree[stage]['options'].remove(i)
+                ways[stage].append(i)
+            new_one = self.fill_table_with(table, index, i, tree, stage)
             new_table = new_one[0]
             updated_tree = new_one[1]
             next_stage = new_one[2]
             if self.check_if_only_ints(new_table) is False:
-                self.try_to_fill(new_table, updated_tree, next_stage)
+                self.try_to_fill(new_table, updated_tree, ways, next_stage)
             else:
-                if self.is_everything_alright(new_table) is True:
-                    return new_table
+                if self.is_everything_alright(new_table) is not False:
+                    correct_solution = copy.deepcopy(table)
+                    break
                 else:
-                    del updated_tree[f'{next_stage}']
-                    stage = next_stage - 1
-                    pass
+                    if len(tree[stage]['options']) != 0:
+                        q_table = updated_tree[stage]['table']
+                        get_back = True
+                        self.try_to_fill(q_table, tree, ways, stage, get_back)
+                    else:
+                        stage = stage - 1
+                        q_table = updated_tree[stage]['table']
+                        get_back = True
+                        self.try_to_fill(q_table, tree, ways, stage, get_back)
+        return correct_solution
+
         # # # # # # # # # # # # # # # # # # # # # # # # # # # #
         #                                                     #
         #        |.|                                          #
@@ -629,104 +655,3 @@ wartości wysokości piramid
         #       którą wcześniej się wybrało)                  #
         #                                                     #
         # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-        pass
-
-    # # # # # # # #
-
-    # poprzednie notatki
-    """
-    tutaj wybiera jedeną z opcji ze słownika z indeksami
-    patrzy jakie opcje są dostępne do wstawienia
-    wybiera jedna -> wstawia -> limiter() itd
-    zapisuje tablice
-
-    jesli tablica jest juz zrobiona sprawdza czy poprawna
-
-    jesli jeszcze nie ma samych intów w tablicy
-    zapisuje jakos obecy stan
-    i jeszcze raz robi to podstawianie
-
-    # takie chodzenie po drzewku
-    """
-
-    # def try_to_fill(self, table):
-    #     # n = self.lenght()
-    #     unchanged = []
-    #     unchanged.append(copy.deepcopy(table))
-    #     options = self.sort_possible_options(table)
-    #     for k in range(min(options.keys()), max(options.keys())+1):
-    #         for elem in options[k]:
-    #             indexes = elem
-    #             for item in table[indexes[0]][indexes[1]]:
-    #                 new = self.fill_table_with(table, indexes, item)
-    #                 if type(new) is list:
-    #                     return new
-    #                 else:
-    #                     # table = unchanged
-    #                     pass
-
-    # def fill_table_with(self, table, indexes: list, attempt: int):
-    #     n = self.lenght()
-    #     table[indexes[0]][indexes[1]] = attempt
-    #     self.limit_potential_solutions(table)
-    #     for i in range(n):
-    #         for j in range(n):
-    #             if type(table[i][j]) is not int:
-    #                 self.try_to_fill(table)
-    #     if self.is_table_correct(table) is True:
-    #         if self.check_guidance_prompts(table) is True:
-    #             return table
-    #         else:
-    #             return None
-    #     else:
-    #         return None
-
-    ###
-
-    # def old_try_to_fill(self, table):
-    #     n = self.lenght()
-    #     # unchanged = copy.deepcopy(table)
-    #     options = self.sort_possible_options(table)
-    #     for k in range(2, n+1):
-    #         # options = self.sort_possible_options(table)
-    #         if k in options.keys():
-    #             for i in range(len(options[k])):
-    #                 indexes = options[k][i]
-    #                 base_list = table[indexes[0]][indexes[1]]
-    #                 if type(base_list) is list:
-    #                     for a in base_list:
-    #                         new = self.old_fill_table_with(table, indexes, a)
-    #                         if new[0] is True:
-    #                             return new[1]
-    #         # else:
-    #         #     pass
-
-    # def old_fill_table_with(self, table, indexes, attempt):
-    #     unchanged = copy.deepcopy(table)
-    #     n = self.lenght()
-    #     table[indexes[0]][indexes[1]] = attempt
-    #     potential_one = self.limit_potential_solutions(table)
-    #     for i in range(n):
-    #         for j in range(n):
-    #             if type(table[i][j]) is not int:
-    #                 self.old_try_to_fill(potential_one)
-    #     if self.is_table_correct(potential_one) is True:
-    #         if self.check_guidance_prompts(potential_one) is True:
-    #             return (True, potential_one)
-    #     return (False, unchanged)
-
-    # """
-    # teraz musi z tych wspołrzednych wybierac kolejne listy
-    # i podstawia jenda z potencjalnych rozwiazan z tej listy
-    # potem prowadzone sa te limitery dla danej wartosci
-    # nastepnie sprawdza poprawnosc i countery()
-    # """
-    #
-    # """
-    # jesli jest cos nie tak to ma wrocic i wybrac kolejne elementy z list
-    # i tak do konca czyli az znajdzie poprawna tablice
-    #
-    # tworzy kopie tablicy i jesli bedzie tylko jedna tablica
-    # to bedzie to ostateczna
-    # """
