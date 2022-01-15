@@ -1,15 +1,8 @@
-from solver import Solver
-
-
-def insert_guide():
-    guide = Solver([
-        # podpowiedź podana przez użytkownika jako wejście
-    ])
-    return guide
+from input import insert_guide
 
 
 def main():
-    no_solution = 'There is no solutioin. Puzzle cannot be solved.'
+    no_solution = 'There is no solutioin of this puzzle. It cannot be solved.'
     guide = insert_guide()
     table = guide.set_table()
     guide.solve_if_N(guide.solve_if_ONE(table))
@@ -18,24 +11,21 @@ def main():
     guide.zero_into_list(table)
     guide.reduce_from_guide_overall(table)
     guide.limit_potential_solutions(table)
-
-    # na tym etapie mamy utworzoną tablicę, na której naniesione
-    # są już częściowo odpoweidzi.
-    # Tam, gdzie nie da się jednoznczanie wpisać wartości
-    # jest lista możliwych opcji.
-    #
-    # Teraz potrzeba funkcji, które:
-    #   - podstawią jakąś opcję, która jest najbardziej prawdopodobna,
-    #   - limiter() z tą opcją
-    #   - sprawdzająca, czy wartość jest poprawna i
-    #     czy zgadza się z wartością z guide'a ( counter() )
-    #
-    #   - jeśli jescze się nie rozwiązało powtarzamy
+    if guide.check_if_only_ints(table) is True:
+        if guide.is_everything_alright(table) is True:
+            return table
+        else:
+            return no_solution
+    solved = guide.guess_solution(table)
+    return solved
 
 
 if __name__ == '__main__':
-    if type(main()) is list:
-        for rows in main():
+    table = main()
+    if type(table) is list:
+        print('\n\nThe solution:\n')
+        for rows in table:
             print(rows)
     else:
-        print(main())
+        print('\n')
+        print(table)
