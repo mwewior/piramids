@@ -57,19 +57,16 @@ class Solver:
     """
 
     def __init__(self, guide: list):
-
         if len(guide) != 4:
-            raise InvalidGuideError(
-                'Podano niepoprawną podpowiedź. \
+            message = 'Podano niepoprawną podpowiedź. \
 Liczba wierszy musi być równa 4.'
-                )
+            raise InvalidGuideError(message)
 
         for i in range(3):
             if len(guide[i]) != len(guide[i+1]):
-                raise InvalidGuideError(
-                    'Podano niepoprawną podpowiedź. \
+                message = 'Podano niepoprawną podpowiedź. \
 Wszystkie wiersze muszą być tej samej długości.'
-                )
+                raise InvalidGuideError(message)
 
         for i in range(4):
             for j in range(len(guide[i])):
@@ -77,20 +74,17 @@ Wszystkie wiersze muszą być tej samej długości.'
                     if guide[i][j].isdigit():
                         guide[i][j] = int(guide[i][j])
                     else:
-                        raise InvalidGuideError(
-                            'Podano niepoprawną podpowiedź. \
+                        message = 'Podano niepoprawną podpowiedź. \
 W podpowiedzi mogą znajdować się jedynie liczby.'
-                        )
+                        raise InvalidGuideError(message)
                 if isinstance(guide[i][j], float) or int(guide[i][j]) < 0:
-                    raise InvalidGuideError(
-                        'Podano niepoprawną podpowiedź. \
+                    message = 'Podano niepoprawną podpowiedź. \
 Liczba widzianych piramid musi być całkowitą liczbą dodatnią.'
-                        )
+                    raise InvalidGuideError(message)
                 if int(guide[i][j]) > len(guide[i]):
-                    raise InvalidGuideError(
-                        'Podano niepoprawną podpowiedź. \
+                    message = 'Podano niepoprawną podpowiedź. \
 Liczba widzianych piramid nie może przekraczać długości boku planszy.'
-                        )
+                    raise InvalidGuideError(message)
 
         self._guide = guide
         self._lenght = int(len(guide[0]))
@@ -130,9 +124,8 @@ wartości wysokości piramid
                 for j in range(n):
                     if type(overwritten_table[i][j]) is int:
                         if int(overwritten_table[i][j]) > n:
-                            raise InvalidTableError(
-                                "Height of pyramid on table is incorrect"
-                            )
+                            message = "Height of pyramid on table is incorrect"
+                            raise InvalidTableError(message)
         return overwritten_table
 
     def is_row_correct(self, table=None):
@@ -148,7 +141,7 @@ wartości wysokości piramid
                 for elem in table[i]:
                     if type(elem) is int and elem != 0:
                         a.append(elem)
-                    a.sort()
+                a.sort()
                 b = list(set(a))
                 if len(a) == 0:
                     pass
