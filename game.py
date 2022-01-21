@@ -2,7 +2,7 @@ from input import insert_guide
 
 
 def main():
-    no_solution = 'There is no solutioin of this puzzle. It cannot be solved.'
+    no_solution = 'There is no solutioin of this puzzle.'
     guide = insert_guide()
     table = guide.set_table()
     guide.solve_if_N(guide.solve_if_ONE(table))
@@ -16,8 +16,9 @@ def main():
             return table
         else:
             return no_solution
-    solved = guide.guess_solution(table)
-    return solved
+    else:
+        solved = guide.guess_solution(table)
+        return solved
 
 
 if __name__ == '__main__':
