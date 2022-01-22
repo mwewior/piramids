@@ -1,11 +1,11 @@
 """
-version 1.0
+version 1.0f\n
 This program solves the puzzle called **PYRAMIDS**.
 
 Algorithm used for solving the puzzle https://en.wikipedia.org/wiki/Backtracking
 
 *Terminology:* \n
-**Guidance / Guide** - List of 4 lists (each of the same lenght and containing only ints inside) with prompts to solve the puzzle,\n
+**Guidance / Guide** - List of 4 lists (each of the same length and containing only ints inside) with prompts to solve the puzzle,\n
 **N** - Lenght of table,\n
 **Table** - List of N lists containing N elements - kind of NxN matrix,\n
 **List of Possible Options** - list containing values that can be interposed in the particular position of table.
@@ -33,7 +33,7 @@ class Solver:
 
         for i in range(3):
             if len(guide[i]) != len(guide[i+1]):
-                message = 'Invalid guidance. All of the rows must have same lenght' # noqa
+                message = 'Invalid guidance. All of the rows must have same length' # noqa
                 raise InvalidGuideError(message)
 
         for i in range(4):
@@ -48,7 +48,7 @@ class Solver:
                     message = 'Invalid guidance. Number of the pyramids you can see must be a positive number.' # noqa
                     raise InvalidGuideError(message)
                 if int(guide[i][j]) > len(guide[i]):
-                    message = 'Invalid guidance. Number of the pyramids you can see must not exceed the lenght of the table' # noqa
+                    message = 'Invalid guidance. Number of the pyramids you can see must not exceed the length of the table' # noqa
                     raise InvalidGuideError(message)
 
         self._guide = guide
@@ -56,9 +56,9 @@ class Solver:
     def guide(self):
         return self._guide
 
-    def lenght(self):
+    def length(self):
         """
-        :return: Table's lenght.
+        :return: Table's length.
         :rtype: int
         """
         return int(len(self.guide()[0]))
@@ -69,7 +69,7 @@ class Solver:
         :rtype: list
         """ # noqa
 
-        n = int(self.lenght())
+        n = int(self.length())
         blank = []
         for i in range(n):
             blank.append([])
@@ -90,7 +90,7 @@ class Solver:
             overwritten_table = self.generate_raw_table()
         else:
             overwritten_table = table
-            n = self.lenght()
+            n = self.length()
             for i in range(n):
                 for j in range(n):
                     if type(overwritten_table[i][j]) is int:
@@ -118,7 +118,7 @@ class Solver:
             return False
 
     def is_row_correct(self, table=None):
-        n = self.lenght()
+        n = self.length()
         if table is None:
             pass
         else:
@@ -137,7 +137,7 @@ class Solver:
         return True
 
     def is_column_correct(self, table=None):
-        n = self.lenght()
+        n = self.length()
         if table is None:
             pass
         else:
@@ -166,6 +166,7 @@ class Solver:
         :type v: int
         :param v: value that will overwrite the '0'
         """ # noqa
+
         if table[in1][in2] == 0 or table[in1][in2] == v:
             table[in1][in2] = v
         else:
@@ -180,8 +181,9 @@ class Solver:
         :rtype: list
         :raises InvalidTableError: if there is value other than '0' or 'N' on position where 'N' were meant to be
         """ # noqa
+
         table = self.set_table(table)
-        n = self.lenght()
+        n = self.length()
         for row in range(4):
             for col in range(n):
                 try:
@@ -201,16 +203,16 @@ class Solver:
     def solve_if_N(self, table=None):
         """
         Method finds if there is 'N' in guidance,
-        then overwrites in succession the '0'
+        then overwrites in succession the '0s'
         in row or column with values in range from 1 to N on proper positions
 
         :return: returns overwritten table
         :rtype: list
-        :raises InvalidTableError: if there is value otherthan '0' or 'K' on position where 'K' were meant to be. (K is a value in range from 1 to N)
+        :raises InvalidTableError: if there is value other than '0' or 'K' on position where 'K' were meant to be. (K is a value in range from 1 to N)
         """ # noqa
 
         table = self.set_table(table)
-        n = self.lenght()
+        n = self.length()
         for row in range(4):
             for col in range(n):
                 index_list = list(range(n))
@@ -233,12 +235,12 @@ class Solver:
         """
         When program finnish solving cases with '1' or 'N' from guide,
         then replace every '0' from the table to list.
-        Each of this lists contains every value in range from 1 to N.
+        Each of this lists contain every value in range from 1 to N.
         List contains possible options to interpose in this position.
         """ # noqa
 
         table = self.set_table(table)
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             for j in range(n):
                 if table[i][j] == 0:
@@ -251,7 +253,7 @@ class Solver:
         If guide prompt excludes the possibility of value to occur,
         then it is removed from list of possible options.\n
         For example:\n
-        if the guidance shows '3' and the lenght is 5 then:\n
+        if the guidance shows '3' and the length is 5 then:\n
         '5' cannot occur on the first and second position and '4'
         cannot occur on the first position.
         """ # noqa
@@ -270,7 +272,7 @@ class Solver:
         Method replaces the list with this value.
         """ # noqa
 
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             for j in range(n):
                 if type(table[i][j]) is list:
@@ -279,7 +281,7 @@ class Solver:
         return table
 
     def reduce_from_guide_top(self, table):
-        n = self.lenght()
+        n = self.length()
         values = self.guide()[0]
         for i in range(n):
             value = values[i]
@@ -296,7 +298,7 @@ class Solver:
         return table
 
     def reduce_from_guide_bottom(self, table):
-        n = self.lenght()
+        n = self.length()
         values = self.guide()[1]
         for i in range(n):
             value = values[i]
@@ -313,7 +315,7 @@ class Solver:
         return table
 
     def reduce_from_guide_left(self, table):
-        n = self.lenght()
+        n = self.length()
         values = self.guide()[2]
         for i in range(n):
             value = values[i]
@@ -330,7 +332,7 @@ class Solver:
         return table
 
     def reduce_from_guide_right(self, table):
-        n = self.lenght()
+        n = self.length()
         values = self.guide()[3]
         for i in range(n):
             value = values[i]
@@ -351,26 +353,25 @@ class Solver:
         Method reduces possible options that can occur.
         It uses two types of other methods:
 
-        1) ``limiter():`` *(runs first)*
+        1) ``limiter()`` *(runs first)*:\n
         Finds values which are stated in table.
         Next removes them from lists of possible options
         which are in the same row (or column) as these values.\n
         for example:\n
-        [ 1, [1, 2, 3, 4, 5], 4, [2, 4, 5], [1, 3, 5] ]
-        --> [ 1, [2, 3, 5], 4, [2, 5], [3, 5] ]\n
+        [ 1, [1, 2, 3, 4, 5], 4, [2, 4, 5], [1, 3, 5] ] -> [ 1, [2, 3, 5], 4, [2, 5], [3, 5] ]\n
 
-        2) ``find_uniqe():`` *(runs after limiter)*
+        2) ``find_unique()`` *(runs after limiter)*:\n
         If in one row (or column) there are lists of possible options
         and there is a value that occur only in one of them,
         it must replace the list where it was.\n
         for example:\n
-        [ [1, 2, 3], [1, 3, 5], [1, 3] ]--> [ 2, 5, [1, 3] ]
+        [ [1, 2, 3], [1, 3, 5], [1, 3] ] -> [ 2, 5, [1, 3] ]
 
 
         Whole method runs in loop unless there are no
         differences in the following tables. In one loop method
         makes copy of a table. Then reduces the possible options
-        with ``limiter()`` and ``find_uniqe()`` functions, firstly for rows,
+        with ``limiter()`` and ``find_unique()`` functions, firstly for rows,
         secondly for columns. Next step is comparing the copy of
         not changed table with the changed one. If there are differences
         next loop appears, if not method returns last table.
@@ -391,7 +392,7 @@ class Solver:
         return finnished_table
 
     def limiter_row(self, table):
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             rows = []
             for j in range(n):
@@ -406,7 +407,7 @@ class Solver:
         return table
 
     def limiter_column(self, table):
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             cols = []
             for j in range(n):
@@ -422,7 +423,7 @@ class Solver:
 
     def find_unique_in_row(self, table):
         self.limiter_row(table)
-        n = self.lenght()
+        n = self.length()
         for repeat in range(n):
             for i in range(n):
                 for value in range(1, n+1):
@@ -446,7 +447,7 @@ class Solver:
 
     def find_unique_in_col(self, table):
         self.limiter_column(table)
-        n = self.lenght()
+        n = self.length()
         for repeat in range(n):
             for i in range(n):
                 col = []
@@ -475,6 +476,7 @@ class Solver:
         Checks if the solved table is consistent
         with guidance and if there are no conflicts.
         """ # noqa
+
         if self.is_table_correct(table) is True:
             if self.check_guidance_prompts(table) is True:
                 return True
@@ -488,7 +490,8 @@ class Solver:
         Checks if type of every element of
         table is int (must be positive number).
         """ # noqa
-        n = self.lenght()
+
+        n = self.length()
         for i in range(n):
             for j in range(n):
                 each = table[i][j]
@@ -499,11 +502,12 @@ class Solver:
     def check_guidance_prompts(self, table):
         """
         Contains ``counter()`` methods (each of them works cognately).
-        It compares the growth of the pyraminds' height with the valuesfrom guidance.\n
+        It compares the growth of the pyraminds' height with the values from guidance.\n
         If compared values are different, returns False,
-        so that means there are some invalid values on the game table.
+        so that means there are some values on the incorrect position of the game table.
         If values are the same, returns True.
         """ # noqa
+
         if self.counter_top(table) is False:
             return False
         if self.counter_bottom(table) is False:
@@ -515,7 +519,7 @@ class Solver:
         return True
 
     def counter_top(self, table):
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             value = self.guide()[0][i]
             for j in range(1, n+1):
@@ -533,7 +537,7 @@ class Solver:
         return True
 
     def counter_bottom(self, table):
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             value = self.guide()[1][i]
             for j in range(1, n+1):
@@ -551,7 +555,7 @@ class Solver:
         return True
 
     def counter_left(self, table):
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             value = self.guide()[2][i]
             for j in range(n):
@@ -569,7 +573,7 @@ class Solver:
         return True
 
     def counter_right(self, table):
-        n = self.lenght()
+        n = self.length()
         for i in range(n):
             value = self.guide()[3][i]
             for j in range(1, n+1):
@@ -592,13 +596,14 @@ class Solver:
         """
         Method runs across the table and finds list of possible options.
         When finds one, appends it to the proper place in
-        a dictionary of options - keys means ammount of elements in list,
-        values means index of position in table.
+        a dictionary of options - keys mean ammount of elements in list,
+        values mean index of position in table.
 
         :return: Returns dictionary where keys represent ammount of elements in lists possible options and values represent indexes of position on table
         :rtype: dictionary
         """ # noqa
-        n = self.lenght()
+
+        n = self.length()
         probs = {}
         for k in range(2, n+1):
             probs[k] = []
@@ -614,7 +619,7 @@ class Solver:
 
     def get_new_root(self, table):
         """
-        Backtracking algoritm can be visualised as a roots of tree
+        Backtracking algoritm can be visualised as roots of tree
         and checking every possible connections to the bottom. In this
         method program finds the list of possible options which contains
         the least elements. When it is choosing lists with fewer elements
@@ -623,6 +628,7 @@ class Solver:
         :return: returns tuple containing index of list of possible options and the elements which this list contains
         :rtype: tuple
         """ # noqa
+
         options = self.sort_possible_options(table)
         ways_number = min(options.keys())
         for index in options[ways_number]:
@@ -630,6 +636,10 @@ class Solver:
             return (index, elems)
 
     def guess_solution(self, table):
+        """
+        Starting method for try_to_fill().
+        Tree and ways dictionaries are created here.
+        """
         tree = {}
         ways = {}
         stage = 0
@@ -641,12 +651,12 @@ class Solver:
         While program is going deeper in solving puzzle,
         it is making some choices, so it is creating copies
         of stages before it has to choose. At this point it is
-        coping current state of table and passing most significant information further.\n
+        copying current state of table and passing most significant information further.\n
         Firstly this method is getting dictionary (tree),
-        which contains information of previous decissions.
+        which contains information of previous decisions.
         Then it creates current stage, and adds information (position and its elements)
         of one of the lists of possible options for further solving.\n
-        When program is going back (after finding wrong solution) and chooses another option
+        When program goes back (after finding wrong solution) and chooses another option
         it deletes stages which were on the deeper level in relation to current one.
 
         :param table: current state of table
@@ -655,9 +665,10 @@ class Solver:
         :type tree: dictionary
         :param stage: current stage of the tree
         :type stage: int
-        :return: returns tuple which cointains updated tree, and last stage
+        :return: returns tuple which contains updated tree, and last stage
         :rtype: tuple
         """ # noqa
+
         unchanged = copy.deepcopy(table)
         tree[stage] = {}
         way = self.get_new_root(table)
@@ -670,7 +681,6 @@ class Solver:
                 involved_keys.append(i)
         last_stage = max(involved_keys)
         return (tree, last_stage)
-        # ### można spróbować przetestować
 
     def get_previous_way_info(self, ways: dict, stage):
         """
@@ -738,6 +748,7 @@ class Solver:
         :type backing: bool, optional
         :return: solved puzzle if it is solvable
         """ # noqa
+
         if backing is False:
             info = self.get_stage_info(table, tree, stage)
             ways = self.get_previous_way_info(ways, stage)

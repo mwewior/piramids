@@ -757,7 +757,7 @@ def test_reduce_mixed():
         [0, 0, 0, 5, 0]
     ]
     lister = mixer.zero_into_list(tablica)
-    shorted = mixer.reduce_from_guide_overall(lister)
+    shorted = mixer.reduce_from_guide(lister)
 
     assert shorted == [
         [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4],

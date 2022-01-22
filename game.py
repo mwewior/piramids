@@ -5,7 +5,7 @@ import sys
 
 def main():
     """
-    Method which contains all of the essencial methods from *Solver.py*.
+    Method which contains all of the essencial methods from *Solver.py*./n
     Order of running methods:\n
     1) ``insert_guide()``\n
     2) ``set_table()``\n
@@ -40,20 +40,9 @@ def main():
         return solved
 
 
-if __name__ == '__main__':
-    table = main()
-    if type(table) is list:
-        print('\n\nThe solution:\n')
-        for rows in table:
-            print(rows)
-    else:
-        print('\n')
-        print(table)
-
-
 def insert_guide():
     """
-    Method that requires the guidance as an imput for the program.
+    Method that requires the guidance as an input for the program.
     """
     incorrect = True
     while incorrect is True:
@@ -96,3 +85,14 @@ def try_again():
         return True
     if again in exitquit:
         sys.exit(0)
+
+
+if __name__ == '__main__':
+    table = main()
+    if type(table) is list:
+        print('\n\nThe solution:\n')
+        for rows in table:
+            print(rows)
+    else:
+        print('\n')
+        print(table)
