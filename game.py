@@ -1,7 +1,26 @@
-from input import insert_guide
+from solver import Solver
+import ast
+import sys
 
 
 def main():
+    """
+    Method which contains all of the essencial methods from *Solver.py*.
+    Order of running methods:\n
+    1) ``insert_guide()``\n
+    2) ``set_table()``\n
+    3) ``solve_if_ONE()``\n
+    4) ``solve_if_N()``\n
+    5) ``is_table_correct()``\n
+    6) ``zero_into_list()``\n
+    7) ``reduce_from_guide()``\n
+    8) ``check_if_only_ints()``\n
+    9) ``is_everything_alright()``\n
+    10) ``guess_solution()``\n
+
+    When puzzle is solvable program prints the table with correct answer.
+    If there is no solution for it, then proper message is printed.
+    """
     no_solution = 'There is no solutioin of this puzzle.'
     guide = insert_guide()
     table = guide.set_table()
@@ -9,7 +28,7 @@ def main():
     if guide.is_table_correct(table) is False:
         return no_solution
     guide.zero_into_list(table)
-    guide.reduce_from_guide_overall(table)
+    guide.reduce_from_guide(table)
     guide.limit_potential_solutions(table)
     if guide.check_if_only_ints(table) is True:
         if guide.is_everything_alright(table) is True:
@@ -30,3 +49,50 @@ if __name__ == '__main__':
     else:
         print('\n')
         print(table)
+
+
+def insert_guide():
+    """
+    Method that requires the guidance as an imput for the program.
+    """
+    incorrect = True
+    while incorrect is True:
+        to_solve = input(f"\nType the guidence here. Allowed format:\t\t\
+[...], [...], [...], [...]\n(4 separated lists with same ammount of numbers \
+between 0 and table's lenght - numbers and lists must be devided by commas)\
+\n\n")
+        try:
+            to_solve = list(ast.literal_eval(to_solve))
+            incorrect = False
+        except Exception:
+            print('\nSomething went wrong.')
+            incorrect = try_again()
+    guide = Solver(to_solve)
+    try:
+        return guide
+    except Exception as error:
+        print(str(error))
+
+
+def try_again():
+    """
+    Method that reads the input again after failed attempt
+    """
+    yes = [
+        'y', 'Y', 'yes', 'Yes', 'YES'
+        ]
+    exitquit = [
+        'q', 'Q', 'quit', 'Quit', 'QUIT', 'exit', 'Exit', 'EXIT'
+    ]
+    keys = yes + exitquit
+    incorrect = True
+    while incorrect is True:
+        again = input(f'If you want to type guidance again, press "y".\nIf you want to quit, press "q".\n\n') # noqa
+        if again not in keys:
+            incorrect = True
+        else:
+            incorrect = False
+    if again in yes:
+        return True
+    if again in exitquit:
+        sys.exit(0)

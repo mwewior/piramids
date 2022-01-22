@@ -33,7 +33,7 @@ def try_again():
     keys = yes + exitquit
     incorrect = True
     while incorrect is True:
-        again = input(f'If you want to type guidance again press "y".\nIf you want to quit press "q".\n\n') # noqa
+        again = input(f'If you want to type guidance again, press "y".\nIf you want to quit, press "q".\n\n') # noqa
         if again not in keys:
             incorrect = True
         else:
