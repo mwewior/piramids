@@ -14,7 +14,8 @@ class InvalidGuideError(ProjectErrors):
 
 class PyraminInterposeError(ProjectErrors):
     """
-    Raised when there is conflict while solving.
+    Raised when some method wants to interpose value
+    on other value that already exist in table
     """
     pass
 
@@ -22,8 +23,8 @@ class PyraminInterposeError(ProjectErrors):
 class InvalidTableError(ProjectErrors):
     """
     Raised when there is conflict on table.
-    Usually when:
-        1) some table's values exceed maximum height,
-        2) there are same values in row or column.
+    Usually when:\n
+    1) some table's values exceed maximum height,\n
+    2) there are same values in row or column.
     """
     pass
